@@ -1,0 +1,15 @@
+<section id="services" class="mx-auto mt-24 w-[95%] md:w-[90%]">
+  <h2 class="reveal text-2xl font-bold md:text-3xl">Qué hacemos</h2>
+  <div class="mt-6 grid gap-6 md:grid-cols-3">
+    {[
+      {t:"Discovery & Arquitectura", d:"Diagnóstico, roadmap, UX y arquitectura escalable."},
+      {t:"Desarrollo de Productos", d:"Web, backends, APIs. Calidad, seguridad y rendimiento."},
+      {t:"IA y Automatización", d:"Asistentes, análisis de voz/texto, RPA e integraciones."}
+    ].map(s => (
+      <article class="glass card-hover rounded-2xl p-5 reveal">
+        <h3 class="text-lg font-semibold">{s.t}</h3>
+        <p class="mt-2 text-white/75">{s.d}</p>
+      </article>
+    ))}
+  </div>
+</section>

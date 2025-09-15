@@ -1,0 +1,15 @@
+<section id="work" class="mx-auto mt-24 w-[95%] md:w-[90%]">
+  <h2 class="reveal text-2xl font-bold md:text-3xl">Casos recientes</h2>
+  <div class="mt-6 grid gap-6 md:grid-cols-2">
+    {[
+      {title:"Optimización de soporte", badge:"Automatización", desc:"Reducción del 35% en tiempos de respuesta con asistentes y flujos."},
+      {title:"Panel de insights", badge:"Data/IA", desc:"KPIs en tiempo real para decisiones operativas y de ventas."}
+    ].map(c => (
+      <article class="glass card-hover rounded-2xl p-5 reveal">
+        <span class="rounded-full bg-sky-400/20 px-3 py-1 text-xs">{c.badge}</span>
+        <h3 class="mt-3 text-lg font-semibold">{c.title}</h3>
+        <p class="mt-2 text-white/75">{c.desc}</p>
+      </article>
+    ))}
+  </div>
+</section>

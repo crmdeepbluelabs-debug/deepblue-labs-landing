@@ -1,0 +1,59 @@
+---
+/* Sin astro:assets; usamos /public para evitar líos */
+const IMG_SRC = "/images/deepblue-desk.jpg";
+---
+
+<section id="studio-shot" class="mx-auto mt-20 w-[95%] md:w-[90%]">
+  <div class="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl">
+    <!-- glow -->
+    <div class="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-sky-400/20 blur-3xl"></div>
+
+    <div class="relative overflow-hidden rounded-[1.35rem]">
+      <!-- Imagen con Ken Burns + hover zoom -->
+      <img
+        src={IMG_SRC}
+        alt="Espacio de trabajo moderno"
+        class="h-[420px] w-full object-cover will-change-transform transition-transform duration-[4000ms] ease-out group-hover:scale-[1.06] animate-kenburns"
+        loading="lazy"
+      />
+
+      <!-- degradado -->
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent"></div>
+      <!-- highlight -->
+      <div class="pointer-events-none absolute -top-1 left-1/2 h-40 w-[120%] -translate-x-1/2 rotate-[8deg] bg-gradient-to-b from-white/20 to-transparent opacity-30"></div>
+
+      <!-- texto -->
+      <div class="absolute bottom-4 left-4">
+        <span class="glass rounded-full px-3 py-1 text-xs">Nuestro espacio</span>
+        <h3 class="mt-2 text-lg font-semibold">Diseño + ingeniería, sin fricción</h3>
+        <p class="max-w-xl text-sm text-white/75">Prototipamos, medimos y entregamos valor continuo.</p>
+      </div>
+    </div>
+
+    <!-- Tilt suave (sin backticks) -->
+    <script is:inline>
+      const box = document.currentScript && document.currentScript.parentElement;
+      if (box) {
+        box.addEventListener('mousemove', function (e) {
+          const r = box.getBoundingClientRect();
+          const x = (e.clientX - r.left) / r.width - 0.5;
+          const y = (e.clientY - r.top) / r.height - 0.5;
+          const rx = (-y * 4).toFixed(2);
+          const ry = (x * 6).toFixed(2);
+          box.style.transform = 'perspective(900px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg)';
+        });
+        box.addEventListener('mouseleave', function () {
+          box.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)';
+        });
+      }
+    </script>
+  </div>
+</section>
+
+<style is:global>
+@keyframes kenburns {
+  0%   { transform: scale(1) translateY(0); }
+  100% { transform: scale(1.05) translateY(-2%); }
+}
+.animate-kenburns { animation: kenburns 18s ease-in-out infinite alternate; }
+</style>

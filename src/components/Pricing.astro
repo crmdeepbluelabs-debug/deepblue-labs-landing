@@ -1,0 +1,19 @@
+<section id="pricing" class="mx-auto mt-24 w-[95%] md:w-[90%]">
+  <h2 class="text-2xl font-bold md:text-3xl">Precios</h2>
+  <div class="mt-6 grid gap-6 md:grid-cols-3">
+    {[
+      {name:"Starter", price:"$", features:["Landing + demo","Integración ligera","Soporte básico"]},
+      {name:"Growth", price:"$$", features:["Múltiples flujos","Panel e insights","SLA comercial"]},
+      {name:"Enterprise", price:"Custom", features:["Seguridad avanzada","Observabilidad","Soporte 24/7"]}
+    ].map(p => (
+      <div class="glass card-hover flex flex-col rounded-2xl p-5">
+        <h3 class="text-lg font-semibold">{p.name}</h3>
+        <p class="mt-1 text-white/70">{p.price}</p>
+        <ul class="mt-4 space-y-2 text-sm text-white/80">
+          {p.features.map(f => <li>• {f}</li>)}
+        </ul>
+        <a href="#contact" class="mt-6 rounded-xl bg-sky-500/20 px-4 py-2 text-center text-sm border border-sky-300/20">Solicitar</a>
+      </div>
+    ))}
+  </div>
+</section>

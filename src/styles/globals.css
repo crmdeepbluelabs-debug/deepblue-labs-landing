@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+/* Tokens DeepBlue Labs */
+@theme {
+  --color-bg:        #070B14;
+  --color-primary:   #1E3A8A;
+  --color-accent:    #38BDF8; /* sky-400 */
+  --color-mint:      #34D399;
+  --radius-xl:       1.25rem;
+}
+
+/* Glass */
+@layer utilities {
+  .glass { @apply bg-white/10 backdrop-blur-lg border border-white/15 shadow-lg; }
+  .glass-dark { @apply bg-slate-900/40 backdrop-blur-xl border border-white/10 shadow-xl; }
+  .card-hover { @apply transition-transform duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl; }
+}
+
+/* Fondo animado sutil */
+body {
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(56,189,248,0.18), transparent 60%),
+    radial-gradient(900px 500px at -10% 20%, rgba(52,211,153,0.12), transparent 60%),
+    linear-gradient(180deg, var(--color-bg), #0B1220 40%, #060910 100%);
+  color: white;
+}
+
+/* Animaciones */
+@keyframes float {
+  0%,100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes glow {
+  0%,100% { opacity: .4; filter: blur(32px); }
+  50% { opacity: .8; filter: blur(40px); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Utilidades de animación */
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-glow { animation: glow 8s ease-in-out infinite; }
+.reveal { opacity: 0; transform: translateY(12px); }
+.reveal.show { animation: fadeUp .6s ease-out forwards; }
+
+/* Accesibilidad: respeta reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float, .animate-glow, .reveal, .reveal.show { animation: none !important; transform: none !important; opacity: 1 !important; }
+}

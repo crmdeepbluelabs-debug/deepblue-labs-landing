@@ -1,16 +1,30 @@
 ---
-
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import NavBar from "@/components/NavBar.astro";
+import Hero from "@/components/Hero.astro";
+import Services from "@/components/Services.astro";
+import Process from "@/components/Process.astro";
+import Work from "@/components/Work.astro";
+import Testimonials from "@/components/Testimonials.astro";
+import LogosMarquee from "@/components/LogosMarquee.astro";
+import WhyUs from "@/components/WhyUs.astro";
+import ContactForm from "@/components/ContactForm.astro";
+import CTA from "@/components/CTA.astro";
+import Footer from "@/components/Footer.astro";
+import FancyImage from "@/components/FancyImage.astro";
 ---
-
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout>
+  <NavBar />
+  <Hero />
+  <FancyImage />
+  <Services />
+  <Process />
+  <WhyUs />
+  <Work />
+  <Testimonials />
+  <section id="contact" class="mx-auto my-24 w-[95%] md:w-[90%]">
+    <ContactForm />
+  </section>
+  <CTA />
+  <Footer />
+</BaseLayout>

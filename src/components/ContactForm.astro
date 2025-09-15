@@ -1,0 +1,88 @@
+---
+const startedAt = Date.now(); // usado para antispam
+---
+
+<form id="contact-form" class="glass-dark rounded-3xl p-6 space-y-4 reveal"
+      method="post" action="/api/contact">
+  <h3 class="text-xl font-semibold">Cuéntanos de tu proyecto</h3>
+  <p class="text-white/70 text-sm">Respondemos en <span class="font-medium text-white">24–48h</span>.</p>
+
+  <!-- honeypot (oculto) -->
+  <input type="text" name="company" class="hidden" tabindex="-1" autocomplete="off" />
+
+  <!-- antispam: tiempo en página -->
+  <input type="hidden" name="startedAt" value={startedAt} />
+
+  <div class="grid gap-4 md:grid-cols-2">
+    <label class="block">
+      <span class="mb-1 block text-sm text-white/80">Nombre</span>
+      <input name="name" required
+             class="w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 outline-none placeholder:text-white/40 focus:border-sky-300/40" placeholder="Tu nombre" />
+    </label>
+    <label class="block">
+      <span class="mb-1 block text-sm text-white/80">Email</span>
+      <input type="email" name="email" required
+             class="w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 outline-none placeholder:text-white/40 focus:border-sky-300/40" placeholder="tu@empresa.com" />
+    </label>
+  </div>
+
+  <label class="block">
+    <span class="mb-1 block text-sm text-white/80">Presupuesto estimado</span>
+    <select name="budget" class="w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 outline-none focus:border-sky-300/40">
+      <option value="No especificado">No especificado</option>
+      <option value="<$5k">Menos de $35k</option>
+      <option value="$5k–$15k">$45k–$65k</option>
+      <option value="$15k–$40k">$65k–$100k</option>
+      <option value=">$40k">Más de $100k</option>
+    </select>
+  </label>
+
+  <label class="block">
+    <span class="mb-1 block text-sm text-white/80">Mensaje</span>
+    <textarea name="message" required rows="5"
+              class="w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 outline-none placeholder:text-white/40 focus:border-sky-300/40"
+              placeholder="Contexto, objetivos, plazos, integraciones…"></textarea>
+  </label>
+
+  <div class="flex flex-col gap-3 md:flex-row md:items-center">
+    <button type="submit"
+            class="rounded-xl bg-sky-500 px-6 py-3 font-semibold text-slate-900 hover:opacity-95">
+      Enviar
+    </button>
+    <span id="form-status" class="text-sm text-white/70"></span>
+  </div>
+
+  <script is:inline>
+    const form = document.getElementById('contact-form');
+    const status = document.getElementById('form-status');
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.textContent = 'Enviando…';
+      const data = new FormData(form);
+
+      // validación ligera
+      const email = data.get('email')?.toString() || '';
+      if (!/^\S+@\S+\.\S+$/.test(email)) {
+        status.textContent = 'Ingresa un email válido.';
+        return;
+      }
+
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: data });
+        if (res.ok) {
+          status.textContent = '¡Gracias! Te contactamos pronto.';
+          form.reset();
+        } else if (res.status === 429) {
+          status.textContent = 'Demasiados intentos. Intenta nuevamente en unos segundos.';
+        } else if (res.status === 400) {
+          status.textContent = 'Faltan campos requeridos.';
+        } else {
+          status.textContent = 'Hubo un problema al enviar. Intenta de nuevo.';
+        }
+      } catch {
+        status.textContent = 'Sin conexión. Revisa tu internet.';
+      }
+    });
+  </script>
+</form>

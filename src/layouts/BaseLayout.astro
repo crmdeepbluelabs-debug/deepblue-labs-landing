@@ -1,0 +1,38 @@
+---
+const {
+  title = "DeepBlue Labs — Consultoría de software e IA",
+  description = "Capturamos valor para tu negocio con productos de software, automatización e IA listos para producción."
+} = Astro.props;
+import "@/styles/globals.css";
+---
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" />
+    <!-- SEO/OG básico -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body class="min-h-screen selection:bg-sky-300/40">
+    <main class="relative">
+      <div class="pointer-events-none absolute inset-0">
+        <div class="absolute right-[-10%] top-[-10%] h-72 w-72 rounded-full bg-sky-400/30 animate-glow"></div>
+        <div class="absolute left-[-10%] top-[20%] h-96 w-96 rounded-full bg-emerald-400/20 animate-glow"></div>
+      </div>
+      <slot />
+    </main>
+
+    <!-- Reveal on scroll (vanilla, tiny) -->
+    <script is:inline>
+      const obs = new IntersectionObserver((entries)=>{
+        for (const e of entries) if (e.isIntersecting) { e.target.classList.add('show'); obs.unobserve(e.target); }
+      },{ threshold:.12 });
+      document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+    </script>
+  </body>
+</html>
