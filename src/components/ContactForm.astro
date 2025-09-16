@@ -1,26 +1,18 @@
 ---
-/** Usa variable pública si la defines en Vercel (.env):
- *  PUBLIC_FORMSPARK_ID=xxxxxxxx
- *  Si no la tienes aún, deja el string literal.
- */
-const FORMSPARK_ID = import.meta.env.FORMSPARK_ID;
+const FORMSPARK_ID = import.meta.env.PUBLIC_FORMSPARK_ID || "TU_FORMSPARK_ID";
 const ACTION = `https://submit-form.com/${FORMSPARK_ID}`;
 ---
 
 <form
+  id="contact-form"
   action={ACTION}
   method="POST"
   class="glass-dark rounded-3xl p-6 space-y-4 reveal"
+  novalidate
 >
-  <!-- Redirección tras enviar (opcional, crea src/pages/gracias.astro) -->
-  <input type="hidden" name="_redirect" value="/gracias" />
-  <!-- Asunto del email que te manda Formspark (opcional) -->
-  <input type="hidden" name="_email.subject" value="Nuevo lead — DeepBlue Labs" />
-
-  <!-- Honeypot para bots -->
+  <!-- Honeypot -->
   <input type="text" name="company" class="hidden" tabindex="-1" autocomplete="off" />
-
-  <!-- Metadatos útiles -->
+  <!-- Meta -->
   <input type="hidden" name="source" value="DeepBlue Labs Landing" />
   <input type="hidden" name="startedAt" value={Date.now()} />
 
@@ -56,10 +48,10 @@ const ACTION = `https://submit-form.com/${FORMSPARK_ID}`;
       class="w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 outline-none focus:border-sky-300/40"
     >
       <option value="No especificado">No especificado</option>
-      <option value="&lt;$5k">Menos de $5k</option>
-      <option value="$5k–$15k">$5k–$15k</option>
-      <option value="$15k–$40k">$15k–$40k</option>
-      <option value="&gt;$40k">Más de $40k</option>
+      <option value="&lt;$5k">Menos de $35k</option>
+      <option value="$5k–$15k">$35k–$65k</option>
+      <option value="$15k–$40k">$65k–$100k</option>
+      <option value="&gt;$40k">Más de $100k</option>
     </select>
   </label>
 
@@ -74,10 +66,89 @@ const ACTION = `https://submit-form.com/${FORMSPARK_ID}`;
     ></textarea>
   </label>
 
-  <button
-    type="submit"
-    class="rounded-xl bg-sky-500 px-6 py-3 font-semibold text-slate-900 hover:opacity-95"
-  >
-    Enviar
-  </button>
+  <div class="flex flex-col gap-3 md:flex-row md:items-center">
+    <button
+      id="submit-btn"
+      type="submit"
+      class="rounded-xl bg-sky-500 px-6 py-3 font-semibold text-slate-900 hover:opacity-95 disabled:opacity-60 disabled:cursor-not-allowed"
+    >
+      Enviar
+    </button>
+    <span id="form-status" class="text-sm text-white/70"></span>
+  </div>
+
+  <!-- Caja de éxito (se muestra solo al terminar) -->
+  <div id="success-box" class="hidden glass mt-3 rounded-2xl border border-emerald-300/20 p-4">
+    <div class="flex items-center gap-3">
+      <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-400/20">
+        <!-- Check animado -->
+        <svg class="h-5 w-5 animate-success-check" viewBox="0 0 24 24" fill="none">
+          <path d="M20 6L9 17l-5-5" stroke="currentColor" class="text-emerald-300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <p class="text-sm text-white/85">
+        ¡Gracias! Recibimos tu mensaje. Te contactaremos en 24–48h.
+      </p>
+    </div>
+  </div>
+
+  <script is:inline>
+    const form = document.getElementById('contact-form');
+    const statusEl = document.getElementById('form-status');
+    const btn = document.getElementById('submit-btn');
+    const successBox = document.getElementById('success-box');
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusEl.textContent = 'Enviando…';
+      btn.disabled = true;
+
+      const fd = new FormData(form);
+      // Validación mínima
+      const email = (fd.get('email') || '').toString();
+      if (!/^\S+@\S+\.\S+$/.test(email)) {
+        statusEl.textContent = 'Ingresa un email válido.';
+        btn.disabled = false;
+        return;
+      }
+
+      try {
+        // Formspark acepta JSON; mantenemos Accept para respuesta compacta
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(Object.fromEntries(fd))
+        });
+
+        if (res.ok) {
+          statusEl.textContent = '';
+          form.reset();
+          successBox.classList.remove('hidden');
+          // animación de aparición
+          successBox.classList.add('animate-success-fade');
+        } else {
+          statusEl.textContent = 'Hubo un problema al enviar. Intenta de nuevo.';
+        }
+      } catch {
+        statusEl.textContent = 'Sin conexión. Revisa tu internet.';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
 </form>
+
+<style is:global>
+@keyframes success-fade {
+  0% { opacity: 0; transform: translateY(8px) scale(.98); }
+  60% { opacity: 1; transform: translateY(0) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes success-check {
+  0% { transform: scale(0.8) rotate(-8deg); opacity: .6; }
+  50% { transform: scale(1.2) rotate(0deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.animate-success-fade { animation: success-fade .5s ease-out both; }
+.animate-success-check { animation: success-check .6s ease-out both; }
+</style>
